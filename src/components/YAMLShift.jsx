@@ -429,7 +429,7 @@ build:
               </div>
             ) : null}
 
-            <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
               <section className="rounded-[26px] border border-border/85 bg-background p-4 shadow-[0_18px_50px_-38px_rgba(61,52,39,0.4)] md:p-5">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-lg shadow-sm">
