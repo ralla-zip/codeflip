@@ -89,8 +89,7 @@ body {
 .app-shell {
   background-color: var(--background);
   background-image:
-    radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--foreground) 12%, transparent) 1px, transparent 0),
-    radial-gradient(circle at top left, color-mix(in oklab, var(--accent) 8%, transparent), transparent 30%),
+    radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--foreground) 10%, transparent) 1px, transparent 0),
     linear-gradient(180deg, color-mix(in oklab, var(--secondary) 28%, white), transparent 30%);
   background-size: 22px 22px;
 }

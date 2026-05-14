@@ -11,20 +11,32 @@ import {
   ArrowRight,
   ShieldAlert,
 } from "lucide-react";
+import {
+  SiBitbucket,
+  SiCircleci,
+  SiDrone,
+  SiGithubactions,
+  SiGitlab,
+  SiGocd,
+  SiJenkins,
+  SiSemaphoreci,
+  SiTravisci,
+} from "react-icons/si";
+import { FaAws, FaMicrosoft } from "react-icons/fa6";
 
 const PLATFORMS = [
-  { id: "github", label: "GitHub Actions", icon: "🐙" },
-  { id: "azure", label: "Azure DevOps", icon: "☁️" },
-  { id: "jenkins", label: "Jenkins", icon: "🏗️" },
-  { id: "gitlab", label: "GitLab CI", icon: "🦊" },
-  { id: "circleci", label: "CircleCI", icon: "⭕" },
-  { id: "bitbucket", label: "Bitbucket Pipelines", icon: "🪣" },
-  { id: "travis", label: "Travis CI", icon: "🔧" },
-  { id: "drone", label: "Drone CI", icon: "🚁" },
-  { id: "semaphore", label: "Semaphore CI", icon: "🚦" },
-  { id: "gocd", label: "GoCD", icon: "🔄" },
-  { id: "codebuild", label: "AWS CodeBuild", icon: "🏗️" },
-  { id: "codepipeline", label: "AWS CodePipeline", icon: "🚀" },
+  { id: "github", label: "GitHub Actions", icon: SiGithubactions },
+  { id: "azure", label: "Azure DevOps", icon: FaMicrosoft },
+  { id: "jenkins", label: "Jenkins", icon: SiJenkins },
+  { id: "gitlab", label: "GitLab CI", icon: SiGitlab },
+  { id: "circleci", label: "CircleCI", icon: SiCircleci },
+  { id: "bitbucket", label: "Bitbucket Pipelines", icon: SiBitbucket },
+  { id: "travis", label: "Travis CI", icon: SiTravisci },
+  { id: "drone", label: "Drone CI", icon: SiDrone },
+  { id: "semaphore", label: "Semaphore CI", icon: SiSemaphoreci },
+  { id: "gocd", label: "GoCD", icon: SiGocd },
+  { id: "codebuild", label: "AWS CodeBuild", icon: FaAws },
+  { id: "codepipeline", label: "AWS CodePipeline", icon: FaAws },
 ];
 
 const EXAMPLES = {
@@ -85,6 +97,7 @@ function PlatformDropdown({ value, onChange, exclude, label }) {
 
   const selected = useMemo(() => PLATFORMS.find((p) => p.id === value), [value]);
   const available = useMemo(() => PLATFORMS.filter((p) => p.id !== exclude), [exclude]);
+  const SelectedIcon = selected?.icon;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -156,7 +169,9 @@ function PlatformDropdown({ value, onChange, exclude, label }) {
         aria-label={`Selecionar plataforma de ${label.toLowerCase()}`}
         className="flex h-12 w-full items-center gap-3 rounded-2xl border border-border/90 bg-background px-4 text-sm shadow-[0_10px_30px_-24px_rgba(61,52,39,0.75)] transition-[border-color,background-color,box-shadow,transform] hover:border-accent/30 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
-        <span className="text-lg leading-none">{selected?.icon}</span>
+        <span className="flex h-5 w-5 items-center justify-center leading-none">
+          {SelectedIcon ? <SelectedIcon className="h-4 w-4 text-muted-foreground" /> : null}
+        </span>
         <span className="flex-1 text-left font-medium text-card-foreground">{selected?.label}</span>
         <ChevronsUpDown
           className={`h-4 w-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}
@@ -191,7 +206,9 @@ function PlatformDropdown({ value, onChange, exclude, label }) {
                     : "hover:bg-muted/80"
               }`}
             >
-              <span>{platform.icon}</span>
+              <span className="flex h-5 w-5 items-center justify-center">
+                <platform.icon className="h-4 w-4 text-muted-foreground" />
+              </span>
               <span className="flex-1 font-medium">{platform.label}</span>
               {platform.id === value ? <Check className="h-4 w-4" /> : null}
             </button>
@@ -214,6 +231,8 @@ export default function YAMLShift() {
 
   const sourcePlatform = useMemo(() => PLATFORMS.find((p) => p.id === source), [source]);
   const targetPlatform = useMemo(() => PLATFORMS.find((p) => p.id === target), [target]);
+  const SourcePlatformIcon = sourcePlatform?.icon;
+  const TargetPlatformIcon = targetPlatform?.icon;
 
   const handleSourceChange = (nextSource) => {
     setSource(nextSource);
@@ -360,26 +379,26 @@ build:
   };
 
   return (
-    <main className="app-shell min-h-screen px-4 py-6 md:px-8 md:py-10">
-      <div className="mx-auto max-w-[1180px]">
-        <section className="overflow-hidden rounded-[30px] border border-border/90 bg-card shadow-[0_20px_80px_-44px_rgba(61,52,39,0.4)]">
+    <main className="app-shell h-dvh overflow-hidden px-3 py-3 md:px-6 md:py-4">
+      <div className="mx-auto h-full max-w-[1120px]">
+        <section className="flex h-full flex-col overflow-hidden rounded-[28px] border border-border/90 bg-card shadow-[0_20px_80px_-44px_rgba(61,52,39,0.4)]">
           <div className="h-1.5 w-full bg-accent" />
 
-          <header className="space-y-3 border-b border-border/80 px-6 pb-7 pt-8 md:px-10 md:pb-8 md:pt-9">
+          <header className="space-y-2 border-b border-border/80 px-5 pb-4 pt-5 md:px-7 md:pb-5 md:pt-6">
             <div className="flex items-center gap-2 text-muted-foreground">
               <GitBranch className="h-4 w-4" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em]">Pipeline Converter · v1.0</span>
             </div>
-            <h1 className="max-w-3xl text-4xl font-semibold leading-[0.95] tracking-[-0.04em] text-card-foreground md:text-5xl">
+            <h1 className="max-w-3xl text-3xl font-semibold leading-[0.95] tracking-[-0.04em] text-card-foreground md:text-4xl">
               YAML <span className="text-accent">Converter</span>
             </h1>
-            <p className="max-w-3xl text-sm leading-6 text-muted-foreground md:text-[15px]">
+            <p className="max-w-3xl text-xs leading-5 text-muted-foreground md:text-sm">
               Cole seu YAML de origem e realize a conversão entre os diferentes provedores de CI/CD.
             </p>
           </header>
 
-          <div className="space-y-7 px-6 py-6 md:px-10 md:py-8">
-            <section className="rounded-[26px] border border-border/80 bg-secondary/45 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] md:p-5">
+          <div className="flex-1 space-y-4 overflow-hidden px-5 py-4 md:px-7 md:py-5">
+            <section className="rounded-[22px] border border-border/80 bg-secondary/45 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] md:p-4">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-end">
                 <PlatformDropdown value={source} onChange={handleSourceChange} exclude={target} label="Origem" />
 
@@ -429,11 +448,13 @@ build:
               </div>
             ) : null}
 
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-              <section className="rounded-[26px] border border-border/85 bg-background p-4 shadow-[0_18px_50px_-38px_rgba(61,52,39,0.4)] md:p-5">
-                <div className="mb-4 flex items-center gap-3">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <section className="rounded-[22px] border border-border/85 bg-background p-3.5 shadow-[0_18px_50px_-38px_rgba(61,52,39,0.4)] md:p-4">
+                <div className="mb-3 flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-lg shadow-sm">
-                    <span>{sourcePlatform?.icon}</span>
+                    {SourcePlatformIcon ? (
+                      <SourcePlatformIcon className="h-5 w-5 text-secondary-foreground" />
+                    ) : null}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-foreground">{sourcePlatform?.label}</p>
@@ -446,16 +467,18 @@ build:
                 <textarea
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
-                  className="code-surface h-[380px] min-h-[320px] w-full resize-none rounded-2xl border border-input bg-card px-4 py-4 text-[13px] leading-6 text-card-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring/50 md:h-[430px] md:text-sm"
+                  className="code-surface h-[30vh] min-h-[220px] w-full resize-none rounded-2xl border border-input bg-card px-4 py-3 text-[13px] leading-6 text-card-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring/50 md:h-[36vh] md:text-sm"
                   placeholder="Cole aqui o YAML de origem"
                   spellCheck={false}
                 />
               </section>
 
-              <section className="rounded-[26px] border border-border/85 bg-background p-4 shadow-[0_18px_50px_-38px_rgba(61,52,39,0.4)] md:p-5">
-                <div className="mb-4 flex flex-wrap items-center gap-3">
+              <section className="rounded-[22px] border border-border/85 bg-background p-3.5 shadow-[0_18px_50px_-38px_rgba(61,52,39,0.4)] md:p-4">
+                <div className="mb-3 flex flex-wrap items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-lg shadow-sm">
-                    <span>{targetPlatform?.icon}</span>
+                    {TargetPlatformIcon ? (
+                      <TargetPlatformIcon className="h-5 w-5 text-secondary-foreground" />
+                    ) : null}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-foreground">{targetPlatform?.label}</p>
@@ -481,7 +504,7 @@ build:
                     value={output}
                     readOnly
                     aria-label="YAML convertido"
-                    className="code-surface h-[380px] min-h-[320px] w-full resize-none rounded-2xl border border-input bg-card px-4 py-4 text-[13px] leading-6 text-card-foreground outline-none md:h-[430px] md:text-sm"
+                    className="code-surface h-[30vh] min-h-[220px] w-full resize-none rounded-2xl border border-input bg-card px-4 py-3 text-[13px] leading-6 text-card-foreground outline-none md:h-[36vh] md:text-sm"
                     placeholder=""
                     spellCheck={false}
                   />
