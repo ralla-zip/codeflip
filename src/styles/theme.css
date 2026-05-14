@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: oklch(0.983 0.012 121.7);
+  --foreground: oklch(0.188 0.002 17.3);
+  --card: oklch(0.920 0.025 89.2);
+  --card-foreground: oklch(0.188 0.002 17.3);
+  --popover: oklch(0.920 0.025 89.2);
+  --popover-foreground: oklch(0.188 0.002 17.3);
+  --primary: oklch(0.446 0.073 135.4);
+  --primary-foreground: oklch(0.983 0.012 121.7);
+  --secondary: oklch(0.947 0.020 100.6);
+  --secondary-foreground: oklch(0.350 0.039 53.5);
+  --muted: oklch(0.937 0.021 91.6);
+  --muted-foreground: oklch(0.350 0.039 53.5);
+  --accent: oklch(0.508 0.108 144.8);
+  --accent-foreground: oklch(0.188 0.002 17.3);
+  --destructive: oklch(0.606 0.219 29.8);
+  --border: oklch(0.866 0.023 104.1);
+  --input: oklch(0.866 0.023 104.1);
+  --ring: oklch(0.505 0.085 136.8);
+  --chart-1: oklch(0.606 0.219 29.8);
+  --chart-2: oklch(0.507 0.189 28.8);
+  --chart-3: oklch(0.532 0.119 142.3);
+  --chart-4: oklch(0.695 0.144 129.8);
+  --chart-5: oklch(0.350 0.039 53.5);
+  --sidebar: oklch(0.941 0.020 97.5);
+  --sidebar-foreground: oklch(0.188 0.002 17.3);
+  --sidebar-primary: oklch(0.606 0.219 29.8);
+  --sidebar-primary-foreground: oklch(0.983 0.012 121.7);
+  --sidebar-accent: oklch(0.873 0.040 54.8);
+  --sidebar-accent-foreground: oklch(0.606 0.219 29.8);
+  --sidebar-border: oklch(0.866 0.023 104.1);
+  --sidebar-ring: oklch(0.507 0.189 28.8);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: oklch(0.188 0.002 17.3);
+  --foreground: oklch(0.983 0.012 121.7);
+  --card: oklch(0.296 0.027 52.3);
+  --card-foreground: oklch(0.983 0.012 121.7);
+  --popover: oklch(0.296 0.027 52.3);
+  --popover-foreground: oklch(0.983 0.012 121.7);
+  --primary: oklch(0.507 0.189 28.8);
+  --primary-foreground: oklch(0.188 0.002 17.3);
+  --secondary: oklch(0.449 0.030 65.0);
+  --secondary-foreground: oklch(0.983 0.012 121.7);
+  --muted: oklch(0.449 0.030 65.0);
+  --muted-foreground: oklch(0.890 0.017 128.7);
+  --accent: oklch(0.532 0.119 142.3);
+  --accent-foreground: oklch(0.188 0.002 17.3);
+  --destructive: oklch(0.606 0.219 29.8);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.507 0.189 28.8);
+  --chart-1: oklch(0.507 0.189 28.8);
+  --chart-2: oklch(0.606 0.219 29.8);
+  --chart-3: oklch(0.532 0.119 142.3);
+  --chart-4: oklch(0.695 0.144 129.8);
+  --chart-5: oklch(0.770 0.024 135.0);
+  --sidebar: oklch(0.265 0.020 56.7);
+  --sidebar-foreground: oklch(0.983 0.012 121.7);
+  --sidebar-primary: oklch(0.507 0.189 28.8);
+  --sidebar-primary-foreground: oklch(0.188 0.002 17.3);
+  --sidebar-accent: oklch(0.449 0.030 65.0);
+  --sidebar-accent-foreground: oklch(0.983 0.012 121.7);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.507 0.189 28.8);
+  --radius: 0.5rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  font-family: "Sora", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+.app-shell {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--foreground) 12%, transparent) 1px, transparent 0),
+    radial-gradient(circle at top left, color-mix(in oklab, var(--accent) 8%, transparent), transparent 30%),
+    linear-gradient(180deg, color-mix(in oklab, var(--secondary) 28%, white), transparent 30%);
+  background-size: 22px 22px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Fraunces", Georgia, serif;
+}
+
+button,
+textarea,
+select,
+input {
+  font: inherit;
+}
+
+.code-surface {
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--muted-foreground) 35%, transparent) transparent;
+}
+
+.code-surface::placeholder {
+  color: color-mix(in oklab, var(--muted-foreground) 60%, white);
+}
+
+.code-surface::-webkit-scrollbar {
+  width: 10px;
+}
+
+.code-surface::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.code-surface::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+  background-color: color-mix(in oklab, var(--muted-foreground) 26%, transparent);
+}
+
+.code-surface::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklab, var(--muted-foreground) 38%, transparent);
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    background-size: 18px 18px;
+  }
+}
