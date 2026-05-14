@@ -5,12 +5,11 @@ import {
   ChevronsUpDown,
   Copy,
   GitBranch,
-  Loader2,
-  Sparkles,
   FileCode2,
   ArrowRight,
   ShieldAlert,
 } from "lucide-react";
+import { convert } from "../lib/converter";
 import {
   SiBitbucket,
   SiCircleci,
@@ -88,6 +87,224 @@ test:
   script:
     - npm ci
     - npm test`,
+  azure: `trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  NODE_ENV: production
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+
+  - script: npm ci
+    displayName: Install dependencies
+
+  - script: npm test
+    displayName: Run tests
+
+  - script: npm run build
+    displayName: Build app`,
+  jenkins: `pipeline {
+  agent any
+
+  environment {
+    NODE_ENV = 'production'
+  }
+
+  stages {
+    stage('Install') {
+      steps {
+        sh 'npm ci'
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh 'npm test'
+      }
+    }
+
+    stage('Build') {
+      steps {
+        sh 'npm run build'
+      }
+    }
+  }
+}`,
+  circleci: `version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+workflows:
+  ci:
+    jobs:
+      - build`,
+  bitbucket: `image: node:20
+
+pipelines:
+  default:
+    - step:
+        name: Build and Test
+        caches:
+          - node
+        script:
+          - npm ci
+          - npm test
+          - npm run build
+        artifacts:
+          - dist/**`,
+  travis: `language: node_js
+node_js:
+  - "20"
+
+branches:
+  only:
+    - main
+
+install:
+  - npm ci
+
+script:
+  - npm test
+  - npm run build`,
+  drone: `kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: install
+    image: node:20
+    commands:
+      - npm ci
+
+  - name: test
+    image: node:20
+    commands:
+      - npm test
+
+  - name: build
+    image: node:20
+    commands:
+      - npm run build`,
+  semaphore: `version: v1.0
+name: CI Pipeline
+
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+
+blocks:
+  - name: Build and Test
+    task:
+      jobs:
+        - name: node-ci
+          commands:
+            - checkout
+            - npm ci
+            - npm test
+            - npm run build`,
+  gocd: `format_version: 10
+
+pipelines:
+  app_pipeline:
+    group: defaultGroup
+    stages:
+      - build:
+          jobs:
+            app_build:
+              tasks:
+                - exec:
+                    command: npm
+                    arguments:
+                      - ci
+                - exec:
+                    command: npm
+                    arguments:
+                      - test
+                - exec:
+                    command: npm
+                    arguments:
+                      - run
+                      - build`,
+  codebuild: `version: 0.2
+
+env:
+  variables:
+    NODE_ENV: production
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - npm ci
+  build:
+    commands:
+      - npm test
+      - npm run build
+
+artifacts:
+  files:
+    - dist/**/*`,
+  codepipeline: `AWSTemplateFormatVersion: "2010-09-09"
+Description: Sample AWS CodePipeline + CodeBuild
+
+Resources:
+  AppPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: app-pipeline
+      RoleArn: arn:aws:iam::123456789012:role/CodePipelineRole
+      ArtifactStore:
+        Type: S3
+        Location: my-artifact-bucket
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: CodeCommit
+                Version: "1"
+              OutputArtifacts:
+                - Name: SourceArtifact
+              Configuration:
+                RepositoryName: my-repo
+                BranchName: main
+        - Name: Build
+          Actions:
+            - Name: Build
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              InputArtifacts:
+                - Name: SourceArtifact
+              OutputArtifacts:
+                - Name: BuildArtifact
+              Configuration:
+                ProjectName: my-codebuild-project`,
 };
 
 function PlatformDropdown({ value, onChange, exclude, label }) {
@@ -225,7 +442,6 @@ export default function YAMLShift() {
   const [target, setTarget] = useState("jenkins");
   const [input, setInput] = useState(EXAMPLES.github);
   const [output, setOutput] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -280,102 +496,21 @@ export default function YAMLShift() {
     return () => window.clearTimeout(timer);
   }, [copied]);
 
-  const convert = () => {
+  const handleConvert = () => {
     if (!input.trim()) {
       setError("Por favor, insira um YAML para converter.");
       return;
     }
 
-    setLoading(true);
     setError("");
     setCopied(false);
 
-    // Simula conversão com delay
-    setTimeout(() => {
-      const exampleOutputs = {
-        github: `# Converted to GitHub Actions
-name: CI Pipeline
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - run: npm ci
-      - run: npm test
-      - run: npm run build`,
-        jenkins: `// Converted to Jenkins Declarative Pipeline
-pipeline {
-    agent any
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-        stage('Setup') {
-            steps {
-                sh 'node --version'
-            }
-        }
-        stage('Install') {
-            steps {
-                sh 'npm ci'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'npm test'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'npm run build'
-            }
-        }
+    try {
+      const result = convert(source, target, input);
+      setOutput(result);
+    } catch (e) {
+      setError(e.message || "Erro ao converter o YAML.");
     }
-}`,
-        gitlab: `stages:
-  - checkout
-  - install
-  - test
-  - build
-
-checkout:
-  stage: checkout
-  image: node:20
-  script:
-    - git fetch
-
-install:
-  stage: install
-  image: node:20
-  script:
-    - npm ci
-
-test:
-  stage: test
-  image: node:20
-  script:
-    - npm test
-
-build:
-  stage: build
-  image: node:20
-  script:
-    - npm run build`,
-      };
-
-      setOutput(exampleOutputs[target] || exampleOutputs.jenkins);
-      setLoading(false);
-    }, 800);
   };
 
   return (
@@ -423,21 +558,11 @@ build:
 
                 <button
                   type="button"
-                  onClick={convert}
-                  disabled={loading || !input.trim()}
+                  onClick={handleConvert}
+                  disabled={!input.trim()}
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[0_16px_32px_-20px_rgba(72,88,55,0.95)] transition-[background-color,transform,box-shadow] hover:-translate-y-px hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-primary/55 disabled:shadow-none disabled:hover:translate-y-0"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Convertendo...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4" />
-                      Converter YAML
-                    </>
-                  )}
+                  Converter YAML
                 </button>
               </div>
             </section>
@@ -509,7 +634,7 @@ build:
                     spellCheck={false}
                   />
 
-                  {!loading && !output.trim() ? (
+                  {!output.trim() ? (
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-2xl px-6 text-center">
                       <div className="max-w-sm rounded-3xl border border-dashed border-border/80 bg-background/82 px-6 py-7 shadow-sm backdrop-blur-[1px]">
                         <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
@@ -519,15 +644,6 @@ build:
                         <p className="mt-2 text-xs leading-5 text-muted-foreground md:text-sm">
                           Depois de colar o YAML de origem, clique em “Converter YAML” para gerar o arquivo de destino.
                         </p>
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {loading ? (
-                    <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-background/70 backdrop-blur-[1px]">
-                      <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
-                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                        Convertendo pipeline...
                       </div>
                     </div>
                   ) : null}
