@@ -16,13 +16,7 @@ CodeFlip é uma ferramenta front-end para desenvolvedores que precisam migrar ou
 ---
 
 ## Preview
-
-> Sugestão: adicione um screenshot ou GIF em `assets/preview.png` e referencie aqui.
-
-```
-assets/
-└── preview.png   ← adicione aqui
-```
+![Preview do Codeflip](assets/preview.png)
 
 ---
 
