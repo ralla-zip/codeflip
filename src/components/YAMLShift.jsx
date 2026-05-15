@@ -656,6 +656,21 @@ export default function YAMLShift() {
               <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-[color:color-mix(in_oklab,var(--secondary-foreground)_90%,black)]" />
               <p className="leading-6">Revise sempre o YAML convertido antes de utilizar em produção.</p>
             </div>
+
+            <footer className="py-0 text-center text-[11px] text-muted-foreground">
+              <p className="inline-flex items-center gap-1">
+                <a
+                  href="https://github.com/ralla-zip"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-inherit transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  aria-label="Abrir GitHub de Mel"
+                >
+                  <span>Created with love by Mel</span>
+                  <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="Mel icon" className="h-3 w-3" />
+                </a>
+              </p>
+            </footer>
           </div>
         </section>
       </div>
